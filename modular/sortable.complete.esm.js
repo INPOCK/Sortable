@@ -1544,6 +1544,7 @@ Sortable.prototype =
   evt) {
     if (tapEvt) {
       let options = this.options,
+          fixXaxis = options.fixXaxis,
           fallbackTolerance = options.fallbackTolerance,
           fallbackOffset = options.fallbackOffset,
           touch = evt.touches ? evt.touches[0] : evt,
