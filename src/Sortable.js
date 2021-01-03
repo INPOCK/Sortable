@@ -817,7 +817,9 @@ Sortable.prototype = /** @lends Sortable.prototype */ {
 
 			if (ghostEl) {
 				if (ghostMatrix) {
-					ghostMatrix.e += dx - (lastDx || 0);
+					if (!fixXaxis) {
+						ghostMatrix.e += dx - (lastDx || 0);
+					}
 					ghostMatrix.f += dy - (lastDy || 0);
 				} else {
 					ghostMatrix = {

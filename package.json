@@ -15,7 +15,7 @@
 		"testcafe-reporter-xunit": "^2.1.0",
 		"uglify-js": "^3.5.12"
 	},
-	"description": "JavaScript library for reorderable drag-and-drop lists on modern browsers and touch devices. No jQuery required. Supports Meteor, AngularJS, React, Polymer, Vue, Knockout and any CSS library, e.g. Bootstrap.",
+	"description": "Sortable.js에 X축 고정 기능을 더함",
 	"main": "./Sortable.js",
 	"module": "modular/sortable.esm.js",
 	"scripts": {

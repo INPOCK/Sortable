@@ -314,7 +314,7 @@
     if (!el.getBoundingClientRect && el !== window) return;
     var elRect, top, left, bottom, right, height, width;
 
-    if (el !== window && el !== getWindowScrollingElement()) {
+    if (el !== window && el.parentNode && el !== getWindowScrollingElement()) {
       elRect = el.getBoundingClientRect();
       top = elRect.top;
       left = elRect.left;
@@ -754,7 +754,7 @@
           target.animatingX = !!translateX;
           target.animatingY = !!translateY;
           css(target, 'transform', 'translate3d(' + translateX + 'px,' + translateY + 'px,0)');
-          repaint(target); // repaint
+          this.forRepaintDummy = repaint(target); // repaint
 
           css(target, 'transition', 'transform ' + duration + 'ms' + (this.options.easing ? ' ' + this.options.easing : ''));
           css(target, 'transform', 'translate3d(0,0,0)');
@@ -792,6 +792,11 @@
         }
       }
 
+      plugins.forEach(function (p) {
+        if (p.pluginName === plugin.pluginName) {
+          throw "Sortable: Cannot mount plugin ".concat(plugin.pluginName, " more than once");
+        }
+      });
       plugins.push(plugin);
     },
     pluginEvent: function pluginEvent(eventName, sortable, evt) {
@@ -1322,6 +1327,11 @@
 
       if (originalTarget.isContentEditable) {
         return;
+      } // Safari ignores further event handling after mousedown
+
+
+      if (!this.nativeDraggable && Safari && target && target.tagName.toUpperCase() === 'SELECT') {
+        return;
       }
 
       target = closest(target, options.draggable, el, false);
@@ -1650,7 +1660,10 @@
 
         if (ghostEl) {
           if (ghostMatrix) {
-            ghostMatrix.e += dx - (lastDx || 0);
+            if (!fixXaxis) {
+              ghostMatrix.e += dx - (lastDx || 0);
+            }
+
             ghostMatrix.f += dy - (lastDy || 0);
           } else {
             ghostMatrix = {
@@ -2433,7 +2446,7 @@
         pluginEvent('showClone', this);
         if (Sortable.eventCanceled) return; // show clone at dragEl or original position
 
-        if (rootEl.contains(dragEl) && !this.options.group.revertClone) {
+        if (dragEl.parentNode == rootEl && !this.options.group.revertClone) {
           rootEl.insertBefore(cloneEl, dragEl);
         } else if (nextEl) {
           rootEl.insertBefore(cloneEl, nextEl);
